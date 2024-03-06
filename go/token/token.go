@@ -7,8 +7,8 @@ type Token struct {
 	Literal string
 }
 
-var keywords = map[string]TokenType {
-	"fn": FUNCTION,
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
 	"let": LET,
 }
 
@@ -26,9 +26,15 @@ const (
 	IDENT = "IDENT"
 
 	// Operators
-	ASSIGN = "="
-	PLUS   = "+"
-	//MINUS   = "-"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+
+	LT = "<"
+	GT = ">"
 
 	// Delimiters
 	COMMA     = ","
@@ -42,5 +48,8 @@ const (
 	// Keywords
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
-	INT = "INT"
+	INT      = "INT"
+
+	EQ = "=="
+	NOT_EQ = "!="
 )

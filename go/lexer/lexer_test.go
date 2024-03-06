@@ -8,10 +8,16 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `let five = 5;
 	let ten = 10;
+
 	let add = fn(x, y) {
 	x + y;
 	};
+
 	let result = add(five, ten);
+	!-/*5;
+	5 < 10 > 5;
+	10 == 10;
+	10 != 9;
 	`
 	tests := []struct {
 		expectedType    token.TokenType
@@ -53,11 +59,32 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "ten"},
 		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
+		{token.BANG, "!"},
+		{token.MINUS, "-"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "5"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.GT, ">"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "10"},
+		{token.EQ, "=="},
+		{token.EQ, "10"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "10"},
+		{token.NOT_EQ, "!="},
+		{token.EQ, "9"},
+		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
 	l := New(input)
 	for i, tt := range tests {
 		tok := l.NextToken()
+		t.Logf("tok: %s", tok);
 		if tok.Type != tt.expectedType {
 			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
 				i, tt.expectedType, tok.Type)

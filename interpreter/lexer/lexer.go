@@ -2,12 +2,11 @@ package lexer
 
 import "monkey/token"
 
-
 type Lexer struct {
-	input  string
-	position int // current char
-	readPosition int // after current char
-	ch byte // current char under examination
+	input        string
+	position     int  // current char
+	readPosition int  // after current char
+	ch           byte // current char under examination
 }
 
 func New(input string) *Lexer {
@@ -30,7 +29,7 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
-func isLetter (ch byte) bool {
+func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 
 }
@@ -76,6 +75,7 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
+		// ==
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
@@ -101,6 +101,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '-':
 		tok = newToken(token.MINUS, l.ch)
 	case '!':
+		// Special handling for !=
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()

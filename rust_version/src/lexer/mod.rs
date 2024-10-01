@@ -9,7 +9,7 @@ pub struct Lexer {
 }
 
 fn is_digit(ch: char) -> bool {
-    ch >= '0' && ch <= '9'
+    ch.is_ascii_digit()
 }
 
 fn is_letter(ch: char) -> bool {
@@ -17,7 +17,7 @@ fn is_letter(ch: char) -> bool {
 }
 
 impl Lexer {
-    fn new(input: String) -> Self {
+    pub fn new(input: String) -> Self {
         let mut lexer = Self {
             input,
             ..Self::default()
@@ -28,27 +28,22 @@ impl Lexer {
 
     fn peek_char(&self) -> char {
         if self.read_position >= self.input.len() {
-            0 as u8 as char
+            0_u8 as char
+        } else if let Some(ch) = self.input.chars().nth(self.read_position) {
+            ch
         } else {
-            if let Some(ch) = self.input.chars().nth(self.read_position) {
-                ch
-            } else {
-                panic!("Index out of bounds")
-            }
+            panic!("Index out of bounds")
         }
     }
 
     // Sets current char
     fn read_char(&mut self) {
         if self.read_position >= self.input.len() {
-            // WTF? XD
-            self.ch = 0 as u8 as char;
+            self.ch = 0_u8 as char;
+        } else if let Some(ch) = self.input.chars().nth(self.read_position) {
+            self.ch = ch
         } else {
-            if let Some(ch) = self.input.chars().nth(self.read_position) {
-                self.ch = ch
-            } else {
-                panic!("Index out of bounds")
-            }
+            panic!("Index out of bounds")
         }
         self.position = self.read_position;
         self.read_position += 1;
@@ -76,7 +71,7 @@ impl Lexer {
         }
     }
 
-    fn next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
 
         let token = match self.ch {

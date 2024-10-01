@@ -57,7 +57,7 @@ impl Lexer {
     fn read_number(&mut self) -> String {
         let position = self.position;
         while is_digit(self.ch) {
-            self.read_char()
+            self.read_char();
         }
         self.input[position..self.position].into()
     }
@@ -78,7 +78,6 @@ impl Lexer {
 
     fn next_token(&mut self) -> Token {
         self.skip_whitespace();
-        println!("{} {}", self.position, self.ch);
 
         let token = match self.ch {
             '=' => {
@@ -112,12 +111,14 @@ impl Lexer {
             // End of file
             '\u{0}' => Token::new(TokenType::Eof, "".to_string()),
             _ => {
+                // EARLY RETURN OTHERWISE WE WILL BE READING CHAR TWO TIMES SKIPPING VALUES
+                // OCCRUING AFTER STRING OR INT
                 if is_letter(self.ch) {
                     let literal = self.read_identifier();
-                    Token::new(lookup_ident(&literal), literal)
+                    return Token::new(lookup_ident(&literal), literal);
                 } else if is_digit(self.ch) {
                     let literal = self.read_number();
-                    Token::new(TokenType::Int, literal)
+                    return Token::new(TokenType::Int, literal);
                 } else {
                     Token::new(TokenType::Illegal, self.ch.to_string())
                 }
@@ -214,10 +215,8 @@ mod tests {
 
         for (i, (expected_type, expected_literal)) in tests.into_iter().enumerate() {
             let tok = lexer.next_token();
-            println!("{tok:#?}");
 
             if tok.token_type != expected_type {
-                println!("{lexer:#?}");
                 panic!(
                     "tests[{}] - tokentype wrong. expected={:?}, got={:?}",
                     i, expected_type, tok.token_type

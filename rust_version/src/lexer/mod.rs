@@ -213,22 +213,10 @@ mod tests {
 
         let mut lexer = Lexer::new(input.to_string());
 
-        for (i, (expected_type, expected_literal)) in tests.into_iter().enumerate() {
+        for (expected_type, expected_literal) in tests.into_iter() {
             let tok = lexer.next_token();
-
-            if tok.token_type != expected_type {
-                panic!(
-                    "tests[{}] - tokentype wrong. expected={:?}, got={:?}",
-                    i, expected_type, tok.token_type
-                );
-            }
-
-            if tok.literal != expected_literal {
-                panic!(
-                    "tests[{}] - literal wrong. expected={}, got={}",
-                    i, expected_literal, tok.literal
-                );
-            }
+            assert_eq!(tok.token_type, expected_type);
+            assert_eq!(tok.literal, expected_literal);
         }
     }
 }
